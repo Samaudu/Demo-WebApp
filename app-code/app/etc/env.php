@@ -11,9 +11,9 @@ return [
         'connection' => [
             'default' => [
                 'host' => 'rds_host_endpoint',
-                'dbname' => 'dfsc_db_name',
-                'username' => 'dfsc_db_username',
-                'password' => 'dfsc_db_password',
+                'dbname' => 'jfs_db_name',
+                'username' => 'jfs_db_username',
+                'password' => 'jfs_db_password',
                 'active' => '1',
                 'driver_options' => [
                     1014 => false
