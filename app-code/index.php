@@ -1,25 +1,16 @@
 <?php
 /**
- * Application entry point
- *
- * Example - run a particular store or website:
- * --------------------------------------------
- * require __DIR__ . '/app/bootstrap.php';
- * $params = $_SERVER;
- * $params[\Magento\Store\Model\StoreManager::PARAM_RUN_CODE] = 'website2';
- * $params[\Magento\Store\Model\StoreManager::PARAM_RUN_TYPE] = 'website';
- * $bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $params);
- * \/** @var \Magento\Framework\App\Http $app *\/
- * $app = $bootstrap->createApplication(\Magento\Framework\App\Http::class);
- * $bootstrap->run($app);
- * --------------------------------------------
+ * Public alias for the application entry point
  *
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
+use Magento\Framework\App\Bootstrap;
+use Magento\Framework\App\Filesystem\DirectoryList;
+
 try {
-    require __DIR__ . '/app/bootstrap.php';
+    require __DIR__ . '/../app/bootstrap.php';
 } catch (\Exception $e) {
     echo <<<HTML
 <div style="font:12px/1.35em arial, helvetica, sans-serif;">
@@ -33,7 +24,17 @@ HTML;
     exit(1);
 }
 
-$bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $_SERVER);
+$params = $_SERVER;
+$params[Bootstrap::INIT_PARAM_FILESYSTEM_DIR_PATHS] = array_replace_recursive(
+    $params[Bootstrap::INIT_PARAM_FILESYSTEM_DIR_PATHS] ?? [],
+    [
+        DirectoryList::PUB => [DirectoryList::URL_PATH => ''],
+        DirectoryList::MEDIA => [DirectoryList::URL_PATH => 'media'],
+        DirectoryList::STATIC_VIEW => [DirectoryList::URL_PATH => 'static'],
+        DirectoryList::UPLOAD => [DirectoryList::URL_PATH => 'media/upload'],
+    ]
+);
+$bootstrap = \Magento\Framework\App\Bootstrap::create(BP, $params);
 /** @var \Magento\Framework\App\Http $app */
 $app = $bootstrap->createApplication(\Magento\Framework\App\Http::class);
 $bootstrap->run($app);
